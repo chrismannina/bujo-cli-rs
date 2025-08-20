@@ -1,0 +1,8 @@
+/Users/chrismannina/claude-projects/bujo/target/debug/deps/liblog-94ba30eb88239f0a.rmeta: /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/lib.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/macros.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/serde.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/__private_api.rs
+
+/Users/chrismannina/claude-projects/bujo/target/debug/deps/log-94ba30eb88239f0a.d: /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/lib.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/macros.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/serde.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/__private_api.rs
+
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/lib.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/macros.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/serde.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/log-0.4.27/src/__private_api.rs:

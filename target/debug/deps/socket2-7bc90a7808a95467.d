@@ -1,0 +1,11 @@
+/Users/chrismannina/claude-projects/bujo/target/debug/deps/libsocket2-7bc90a7808a95467.rmeta: /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/lib.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockaddr.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/socket.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockref.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sys/unix.rs
+
+/Users/chrismannina/claude-projects/bujo/target/debug/deps/libsocket2-7bc90a7808a95467.rlib: /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/lib.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockaddr.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/socket.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockref.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sys/unix.rs
+
+/Users/chrismannina/claude-projects/bujo/target/debug/deps/socket2-7bc90a7808a95467.d: /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/lib.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockaddr.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/socket.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockref.rs /Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sys/unix.rs
+
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/lib.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockaddr.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/socket.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sockref.rs:
+/Users/chrismannina/.cargo/registry/src/index.crates.io-6f17d22bba15001f/socket2-0.6.0/src/sys/unix.rs:
