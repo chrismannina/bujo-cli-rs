@@ -24,9 +24,13 @@ fn render_daily_header(f: &mut Frame, app: &App, area: Rect) {
         get_day_of_year_info(&app.current_date)
     );
     
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+    
     let paragraph = Paragraph::new(date_str)
-        .style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD))
-        .block(Block::default().borders(Borders::ALL).title("Daily Log"))
+        .style(Style::default().fg(colors.accent()).add_modifier(Modifier::BOLD))
+        .block(Block::default().borders(borders).title("Daily Log"))
         .alignment(Alignment::Center);
     
     f.render_widget(paragraph, area);
@@ -34,17 +38,20 @@ fn render_daily_header(f: &mut Frame, app: &App, area: Rect) {
 
 fn render_daily_entries(f: &mut Frame, app: &App, area: Rect) {
     let entries = app.journal.entries_for_date(app.current_date);
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
     
     if entries.is_empty() {
         let empty_msg = Paragraph::new("No entries for today.\n\nPress 't' for task, 'e' for event, 'n' for note")
-            .style(Style::default().fg(Color::DarkGray))
-            .block(Block::default().borders(Borders::ALL).title("Entries"))
+            .style(Style::default().fg(colors.muted()))
+            .block(Block::default().borders(borders).title("Entries"))
             .alignment(Alignment::Center);
         f.render_widget(empty_msg, area);
         return;
     }
 
-    let list = create_entry_list(&entries, app.selected_entry)
+    let list = create_entry_list(&entries, app.selected_entry, app)
         .block(
             Block::default()
                 .borders(Borders::ALL)

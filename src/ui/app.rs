@@ -1,3 +1,4 @@
+use crate::config::ConfigManager;
 use crate::models::{Journal, Entry, BulletType};
 use crate::storage::Storage;
 use anyhow::Result;
@@ -32,6 +33,7 @@ pub enum InputMode {
 pub struct App {
     pub journal: Journal,
     pub storage: Storage,
+    pub config: ConfigManager,
     pub current_tab: AppTab,
     pub mode: AppMode,
     pub current_date: NaiveDate,
@@ -49,11 +51,13 @@ impl App {
     pub fn new() -> Result<Self> {
         let storage = Storage::new()?;
         let journal = storage.load_journal()?;
+        let config = ConfigManager::new()?;
         let today = Local::now().date_naive();
         
         Ok(Self {
             journal,
             storage,
+            config,
             current_tab: AppTab::Daily,
             mode: AppMode::Normal,
             current_date: today,
@@ -153,6 +157,15 @@ impl App {
                         Err(e) => self.add_message(format!("Save failed: {}", e)),
                     }
                 }
+            }
+            KeyCode::F(1) => {
+                self.cycle_theme();
+            }
+            KeyCode::F(2) => {
+                self.toggle_border_style();
+            }
+            KeyCode::F(3) => {
+                self.toggle_compact_mode();
             }
             _ => {}
         }
@@ -361,6 +374,59 @@ impl App {
                     .collect()
             }
             AppTab::Collections => Vec::new(),
+        }
+    }
+
+    fn cycle_theme(&mut self) {
+        let themes = ConfigManager::get_predefined_themes();
+        let current_theme = &self.config.get_config().theme.name;
+        
+        let current_index = themes.iter()
+            .position(|(name, _)| *name == current_theme)
+            .unwrap_or(0);
+        
+        let next_index = (current_index + 1) % themes.len();
+        let (next_theme_name, _) = themes[next_index];
+        
+        if let Err(e) = self.config.set_theme(next_theme_name) {
+            self.add_message(format!("Failed to set theme: {}", e));
+        } else {
+            self.add_message(format!("Theme changed to: {}", next_theme_name));
+        }
+    }
+
+    fn toggle_border_style(&mut self) {
+        let result = self.config.update_config(|config| {
+            config.layout.border_style = match config.layout.border_style {
+                crate::config::BorderStyle::Rounded => crate::config::BorderStyle::Plain,
+                crate::config::BorderStyle::Plain => crate::config::BorderStyle::Thick,
+                crate::config::BorderStyle::Thick => crate::config::BorderStyle::Double,
+                crate::config::BorderStyle::Double => crate::config::BorderStyle::Rounded,
+            };
+        });
+        
+        if let Err(e) = result {
+            self.add_message(format!("Failed to toggle border style: {}", e));
+        } else {
+            let style_name = format!("{:?}", self.config.get_config().layout.border_style);
+            self.add_message(format!("Border style: {}", style_name));
+        }
+    }
+
+    fn toggle_compact_mode(&mut self) {
+        let result = self.config.update_config(|config| {
+            config.layout.compact_mode = !config.layout.compact_mode;
+        });
+        
+        if let Err(e) = result {
+            self.add_message(format!("Failed to toggle compact mode: {}", e));
+        } else {
+            let mode = if self.config.get_config().layout.compact_mode {
+                "enabled"
+            } else {
+                "disabled"
+            };
+            self.add_message(format!("Compact mode {}", mode));
         }
     }
 }

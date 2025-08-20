@@ -20,10 +20,12 @@ pub fn render_monthly_view(f: &mut Frame, app: &App, area: Rect) {
 fn render_calendar(f: &mut Frame, app: &App, area: Rect) {
     let (year, month) = app.selected_month;
     let month_name = get_month_name(month);
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
     
     let title = format!("{} {}", month_name, year);
     let mut calendar_lines = vec![
-        Line::from(title.clone()).style(Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+        Line::from(title.clone()).style(Style::default().fg(colors.accent()).add_modifier(Modifier::BOLD)),
         Line::from(""),
         Line::from("Su Mo Tu We Th Fr Sa"),
     ];
@@ -72,11 +74,12 @@ fn render_calendar(f: &mut Frame, app: &App, area: Rect) {
     }
 
     calendar_lines.push(Line::from(""));
-    calendar_lines.push(Line::from("* = has entries").style(Style::default().fg(Color::DarkGray)));
-    calendar_lines.push(Line::from("[] = today").style(Style::default().fg(Color::DarkGray)));
+    calendar_lines.push(Line::from("* = has entries").style(Style::default().fg(colors.muted())));
+    calendar_lines.push(Line::from("[] = today").style(Style::default().fg(colors.muted())));
 
+    let borders = config.layout.border_style.to_ratatui_border();
     let paragraph = Paragraph::new(calendar_lines)
-        .block(Block::default().borders(Borders::ALL).title("Calendar"))
+        .block(Block::default().borders(borders).title("Calendar"))
         .alignment(Alignment::Left);
     
     f.render_widget(paragraph, area);
@@ -85,17 +88,20 @@ fn render_calendar(f: &mut Frame, app: &App, area: Rect) {
 fn render_monthly_entries(f: &mut Frame, app: &App, area: Rect) {
     let (year, month) = app.selected_month;
     let entries = app.journal.entries_for_month(year, month);
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
     
     if entries.is_empty() {
         let empty_msg = Paragraph::new("No entries this month")
-            .style(Style::default().fg(Color::DarkGray))
-            .block(Block::default().borders(Borders::ALL).title("Monthly Entries"))
+            .style(Style::default().fg(colors.muted()))
+            .block(Block::default().borders(borders).title("Monthly Entries"))
             .alignment(Alignment::Center);
         f.render_widget(empty_msg, area);
         return;
     }
 
-    let list = create_entry_list(&entries, app.selected_entry)
+    let list = create_entry_list(&entries, app.selected_entry, app)
         .block(
             Block::default()
                 .borders(Borders::ALL)

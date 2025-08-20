@@ -19,14 +19,19 @@ pub fn render_tabs(f: &mut Frame, app: &App, area: Rect) {
         AppTab::Search => 4,
     };
 
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+
     let tabs = Tabs::new(tab_titles)
-        .block(Block::default().borders(Borders::ALL).title("Bullet Journal"))
+        .block(Block::default().borders(borders).title("Bullet Journal"))
         .select(selected_tab)
-        .style(Style::default().fg(Color::Cyan))
+        .style(Style::default().fg(colors.primary()))
         .highlight_style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
-                .bg(Color::Black)
+                .bg(colors.background())
+                .fg(colors.accent())
         );
 
     f.render_widget(tabs, area);
@@ -53,9 +58,13 @@ pub fn render_status_bar(f: &mut Frame, app: &App, area: Rect) {
 
     let status_text = format!("{}{}{}", mode_text, input_text, search_text);
     
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+    
     let paragraph = Paragraph::new(status_text)
-        .style(Style::default().fg(Color::Yellow))
-        .block(Block::default().borders(Borders::ALL));
+        .style(Style::default().fg(colors.accent()))
+        .block(Block::default().borders(borders));
     
     f.render_widget(paragraph, area);
 }
@@ -70,17 +79,22 @@ pub fn render_messages(f: &mut Frame, app: &App, area: Rect) {
         .map(|msg| Line::from(msg.clone()))
         .collect();
 
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+
     let paragraph = Paragraph::new(messages)
-        .style(Style::default().fg(Color::Green))
-        .block(Block::default().borders(Borders::ALL).title("Messages"))
+        .style(Style::default().fg(colors.success()))
+        .block(Block::default().borders(borders).title("Messages"))
         .wrap(Wrap { trim: true });
     
     f.render_widget(paragraph, area);
 }
 
-pub fn render_help(f: &mut Frame, area: Rect) {
+pub fn render_help(f: &mut Frame, app: &App, area: Rect) {
+    let config = app.config.get_config();
     let help_text = vec![
-        Line::from("Bullet Journal - Help"),
+        Line::from("🗒️ Bullet Journal - Help"),
         Line::from(""),
         Line::from("Navigation:"),
         Line::from("  Tab/Shift+Tab - Switch tabs"),
@@ -102,23 +116,42 @@ pub fn render_help(f: &mut Frame, area: Rect) {
         Line::from("  ? - Toggle this help"),
         Line::from("  q - Quit"),
         Line::from(""),
+        Line::from("Configuration:"),
+        Line::from("  F1 - Cycle theme"),
+        Line::from("  F2 - Toggle border style"),
+        Line::from("  F3 - Toggle compact mode"),
+        Line::from(""),
+        Line::from("Current Settings:"),
+        Line::from(format!("  Theme: {}", config.theme.name)),
+        Line::from(format!("  Border: {:?}", config.layout.border_style)),
+        Line::from(format!("  Compact mode: {}", config.layout.compact_mode)),
+        Line::from(""),
+        Line::from("Config file: ~/.config/bujo/config.toml"),
+        Line::from(""),
         Line::from("Press ? to close help"),
     ];
 
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+
     let paragraph = Paragraph::new(help_text)
-        .style(Style::default().fg(Color::White))
+        .style(Style::default().fg(colors.text()))
         .block(
             Block::default()
-                .borders(Borders::ALL)
+                .borders(borders)
                 .title("Help")
-                .border_style(Style::default().fg(Color::Yellow))
+                .border_style(Style::default().fg(colors.accent()))
         )
         .wrap(Wrap { trim: true });
     
     f.render_widget(paragraph, area);
 }
 
-pub fn create_entry_list<'a>(entries: &'a [&'a crate::models::Entry], selected: Option<usize>) -> List<'a> {
+pub fn create_entry_list<'a>(entries: &'a [&'a crate::models::Entry], selected: Option<usize>, app: &App) -> List<'a> {
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+
     let items: Vec<ListItem> = entries
         .iter()
         .enumerate()
@@ -128,21 +161,21 @@ pub fn create_entry_list<'a>(entries: &'a [&'a crate::models::Entry], selected: 
             
             let style = if entry.bullet_type == crate::models::BulletType::Task {
                 match entry.status {
-                    Some(crate::models::TaskStatus::Complete) => Style::default().fg(Color::Green),
-                    Some(crate::models::TaskStatus::Migrated) => Style::default().fg(Color::Yellow),
-                    Some(crate::models::TaskStatus::Irrelevant) => Style::default().fg(Color::DarkGray),
-                    _ => Style::default().fg(Color::White),
+                    Some(crate::models::TaskStatus::Complete) => Style::default().fg(colors.success()),
+                    Some(crate::models::TaskStatus::Migrated) => Style::default().fg(colors.warning()),
+                    Some(crate::models::TaskStatus::Irrelevant) => Style::default().fg(colors.muted()),
+                    _ => Style::default().fg(colors.text()),
                 }
             } else if entry.bullet_type == crate::models::BulletType::Event {
-                Style::default().fg(Color::Blue)
+                Style::default().fg(colors.secondary())
             } else {
-                Style::default().fg(Color::Cyan)
+                Style::default().fg(colors.primary())
             };
 
             let mut item = ListItem::new(content).style(style);
             
             if Some(i) == selected {
-                item = item.style(style.bg(Color::DarkGray));
+                item = item.style(style.bg(colors.muted()));
             }
             
             item
@@ -150,6 +183,6 @@ pub fn create_entry_list<'a>(entries: &'a [&'a crate::models::Entry], selected: 
         .collect();
 
     List::new(items)
-        .block(Block::default().borders(Borders::ALL))
-        .highlight_style(Style::default().bg(Color::DarkGray))
+        .block(Block::default().borders(borders))
+        .highlight_style(Style::default().bg(colors.muted()))
 }

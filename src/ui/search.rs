@@ -23,18 +23,26 @@ fn render_search_input(f: &mut Frame, app: &App, area: Rect) {
         app.search_query.clone()
     };
 
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+
     let paragraph = Paragraph::new(query_display)
-        .style(Style::default().fg(Color::White))
-        .block(Block::default().borders(Borders::ALL).title("Search Query"));
+        .style(Style::default().fg(colors.text()))
+        .block(Block::default().borders(borders).title("Search Query"));
     
     f.render_widget(paragraph, area);
 }
 
 fn render_search_results(f: &mut Frame, app: &App, area: Rect) {
+    let config = app.config.get_config();
+    let colors = &config.theme.colors;
+    let borders = config.layout.border_style.to_ratatui_border();
+    
     if app.search_query.is_empty() {
         let help_msg = Paragraph::new("Press / to start searching\n\nSearch will match entry content and tags")
-            .style(Style::default().fg(Color::DarkGray))
-            .block(Block::default().borders(Borders::ALL).title("Search Results"))
+            .style(Style::default().fg(colors.muted()))
+            .block(Block::default().borders(borders).title("Search Results"))
             .alignment(Alignment::Center);
         f.render_widget(help_msg, area);
         return;
@@ -44,14 +52,14 @@ fn render_search_results(f: &mut Frame, app: &App, area: Rect) {
     
     if results.is_empty() {
         let no_results_msg = Paragraph::new(format!("No results found for '{}'", app.search_query))
-            .style(Style::default().fg(Color::Yellow))
-            .block(Block::default().borders(Borders::ALL).title("Search Results"))
+            .style(Style::default().fg(colors.warning()))
+            .block(Block::default().borders(borders).title("Search Results"))
             .alignment(Alignment::Center);
         f.render_widget(no_results_msg, area);
         return;
     }
 
-    let list = create_entry_list(&results, app.selected_entry)
+    let list = create_entry_list(&results, app.selected_entry, app)
         .block(
             Block::default()
                 .borders(Borders::ALL)

@@ -1,3 +1,4 @@
+mod config;
 mod models;
 mod storage;
 mod ui;
@@ -88,7 +89,7 @@ fn run_app<B: ratatui::backend::Backend>(terminal: &mut Terminal<B>, app: &mut A
 
 fn draw_ui(f: &mut ratatui::Frame, app: &App) {
     if app.show_help {
-        render_help(f, f.area());
+        render_help(f, app, f.area());
         return;
     }
 
