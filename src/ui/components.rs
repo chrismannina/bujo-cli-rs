@@ -40,12 +40,24 @@ pub fn render_tabs(f: &mut Frame, app: &App, area: Rect) {
 pub fn render_status_bar(f: &mut Frame, app: &App, area: Rect) {
     let mode_text = match app.mode {
         AppMode::Normal => "NORMAL",
-        AppMode::Insert => "INSERT",
+        AppMode::Insert => {
+            if let Some(input_mode) = &app.input_mode {
+                match input_mode {
+                    crate::ui::app::InputMode::Task => "INSERT [TASK]",
+                    crate::ui::app::InputMode::Event => "INSERT [EVENT]", 
+                    crate::ui::app::InputMode::Note => "INSERT [NOTE]",
+                }
+            } else if app.current_tab == AppTab::Search {
+                "INSERT [SEARCH]"
+            } else {
+                "INSERT"
+            }
+        },
         AppMode::Command => "COMMAND",
     };
 
-    let input_text = if app.input_mode.is_some() || app.current_tab == AppTab::Search {
-        format!(" | Input: {}", app.input_buffer)
+    let input_text = if !app.input_buffer.is_empty() {
+        format!(" | {}", app.input_buffer)
     } else {
         String::new()
     };
@@ -56,7 +68,13 @@ pub fn render_status_bar(f: &mut Frame, app: &App, area: Rect) {
         String::new()
     };
 
-    let status_text = format!("{}{}{}", mode_text, input_text, search_text);
+    let hotkeys = if app.mode == AppMode::Normal {
+        " | t:task e:event n:note ?:help q:quit"
+    } else {
+        " | Esc:cancel Enter:confirm"
+    };
+
+    let status_text = format!("{}{}{}{}", mode_text, input_text, search_text, hotkeys);
     
     let config = app.config.get_config();
     let colors = &config.theme.colors;
