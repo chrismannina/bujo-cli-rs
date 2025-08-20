@@ -158,13 +158,13 @@ impl App {
                     }
                 }
             }
-            KeyCode::F(1) => {
+            KeyCode::Char('T') => {
                 self.cycle_theme();
             }
-            KeyCode::F(2) => {
+            KeyCode::Char('B') => {
                 self.toggle_border_style();
             }
-            KeyCode::F(3) => {
+            KeyCode::Char('C') => {
                 self.toggle_compact_mode();
             }
             _ => {}
